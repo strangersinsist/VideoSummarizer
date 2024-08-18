@@ -24,6 +24,8 @@ class VideoNoteApp:
             st.session_state.current_frame_pos = 0
         if "canvas_key" not in st.session_state:
             st.session_state.canvas_key = 0
+        if "url" not in st.session_state:  
+            st.session_state.url = 0
 
     def add_snapshot(self, image_data, video_time, annotation):
         st.session_state.snapshots.append({"image": image_data, "time": video_time, "annotation": annotation})
@@ -49,10 +51,18 @@ class VideoNoteApp:
         uploaded_video = st.file_uploader("选择视频文件", type=["mp4", "mov", "avi"])
 
         if uploaded_video is not None:
+            # 保存上传的视频文件
             tfile = tempfile.NamedTemporaryFile(delete=False)
             tfile.write(uploaded_video.read())
             st.session_state.video_file = tfile.name
+            
+            # 获取视频文件名并提取视频 ID
+            video_filename = uploaded_video.name
+            video_id = video_filename.split('.')[0]  # 获取文件名，不含后缀
+            youtube_url = f"https://www.youtube.com/watch?v={video_id}"
+            st.session_state.url = youtube_url  # 保存完整的 YouTube URL
 
+        # 显示上传的视频
         if st.session_state.video_file is not None:
             st.video(st.session_state.video_file)
 
