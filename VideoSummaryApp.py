@@ -14,8 +14,8 @@ class VideoSummaryApp:
 
     def load_session_state(self):
         """Load session state variables."""
-        if "url" not in st.session_state:
-            st.session_state.url = ""
+        # if "url" not in st.session_state:
+        #     st.session_state.url = ""
         if "transcript" not in st.session_state:
             st.session_state.transcript = ""
         if "summary" not in st.session_state:
@@ -23,13 +23,7 @@ class VideoSummaryApp:
         if "time_stamps" not in st.session_state:
             st.session_state.time_stamps = ""
 
-    def update_url(self):
-        """Update the URL in session state."""
-        url = st.text_input("Enter YouTube Video URL:", st.session_state.url)
-        if url:
-            st.session_state.url = url
-        return st.session_state.url
-
+    
     def generate_transcript(self):
         """Generate transcript and update session state."""
         if st.session_state.url:
