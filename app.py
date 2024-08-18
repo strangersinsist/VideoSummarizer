@@ -16,14 +16,10 @@ def main():
 
     # 左栏：视频加载和总结生成
     with left_column:
-        # 加载视频功能
+
         note_app.load_video()
 
-        # YouTube Transcript, Summary, and Timestamp Generator
-        summary_app.load_session_state()  # 加载 session 状态
-
-        # 更新用户输入的 URL
-        summary_app.update_url()
+        summary_app.load_session_state() 
 
         # 按钮生成 Transcript
         if st.button("Generate Transcript"):
