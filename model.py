@@ -7,7 +7,7 @@ class Model:
     @staticmethod
     def openai_chatgpt(transcript, prompt, extra=""):
         load_dotenv()
-        client = OpenAI(api_key=os.getenv("OPENAI_CHATGPT_API_KEY"),base_url="https://api.deepseek.com")
+        client = OpenAI(api_key=os.getenv("API_KEY"),base_url="https://api.deepseek.com")
         try:
             response = client.chat.completions.create(
             model="deepseek-chat",
