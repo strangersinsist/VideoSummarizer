@@ -56,6 +56,25 @@ By following these guidelines, you can effectively transform video transcripts i
         elif ID == "transcript":
             prompt_text = """
             """
+        
+        elif ID == "wordcloud":
+            prompt_text = """
+            Please analyze the following transcript and identify key concepts, themes, return me 5 to 9 key words. Return only words, with no additional text or commentary.
+            Transcript:
+            """
+
+        elif ID == "mindmap":
+            prompt_text = """
+            Please analyze the following transcript and identify key concepts, themes, and their interconnections. Create a structured mind map format that supports multiple intersecting points, multiple directions, and multiple pathways. Each node should represent a unique concept, and connections should be drawn between related nodes to reflect the complexity and interrelatedness of the ideas. Use the following format: 'Node 1 - Node 2, Node 2 - Node 3, ...'. Ensure the generated mind map includes at least 3 to 6 core nodes with complex interconnections. The length of each connection should not be more than 7 .Return only the connections in this exact format, with no additional text or commentary.
+
+            Example:
+
+            Given the concepts "Technology", "Innovation", "Challenges", and "Future":
+            example output:
+            Technology - Innovation, Innovation - Challenges, Challenges - Future, Technology - Challenges, Innovation - Future, Future - Technology
+
+            Transcript:
+            """
 
         else:
             prompt_text = "NA" 

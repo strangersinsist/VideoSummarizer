@@ -1,5 +1,3 @@
-# VideoNoteApp.py
-
 import streamlit as st
 import tempfile
 import cv2
@@ -47,22 +45,22 @@ class VideoNoteApp:
         return doc
 
     def load_video(self):
-        st.markdown("## 上传视频文件")
-        uploaded_video = st.file_uploader("选择视频文件", type=["mp4", "mov", "avi"])
+        st.markdown("## Upload Video File")
+        uploaded_video = st.file_uploader("Select video file", type=["mp4", "mov", "avi"])
 
         if uploaded_video is not None:
-            # 保存上传的视频文件
+            # Save the uploaded video file
             tfile = tempfile.NamedTemporaryFile(delete=False)
             tfile.write(uploaded_video.read())
             st.session_state.video_file = tfile.name
             
-            # 获取视频文件名并提取视频 ID
+            # Get the video file name and extract the video ID
             video_filename = uploaded_video.name
-            video_id = video_filename.split('.')[0]  # 获取文件名，不含后缀
+            video_id = video_filename.split('.')[0]  # Get the filename without the extension
             youtube_url = f"https://www.youtube.com/watch?v={video_id}"
-            st.session_state.url = youtube_url  # 保存完整的 YouTube URL
+            st.session_state.url = youtube_url  # Save the complete YouTube URL
 
-        # 显示上传的视频
+        # Display the uploaded video
         if st.session_state.video_file is not None:
             st.video(st.session_state.video_file)
 
@@ -70,13 +68,13 @@ class VideoNoteApp:
         if st.session_state.video_file is not None:
             cap = cv2.VideoCapture(st.session_state.video_file)
             if cap.isOpened():
-                st.success("视频加载成功")
+                st.success("Video loaded successfully")
 
                 total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
                 fps = int(cap.get(cv2.CAP_PROP_FPS))
                 duration = total_frames / fps
 
-                seconds_slider = st.slider("选择视频秒数", 0, int(duration), 0)
+                seconds_slider = st.slider("Select video time (seconds)", 0, int(duration), 0)
                 frame_pos = int(seconds_slider * fps)
 
                 if seconds_slider != st.session_state.current_frame_pos / fps:
@@ -93,12 +91,12 @@ class VideoNoteApp:
                     img.save(st.session_state.edited_image, format="PNG")
                     st.session_state.edited_image.seek(0)
 
-                    st.image(img, caption=f"当前帧: {int(seconds_slider)}秒", use_column_width=True)
-                    st.markdown(f"**视频时间：{int(seconds_slider)} 秒**")
+                    st.image(img, caption=f"Current Frame: {int(seconds_slider)} seconds", use_column_width=True)
+                    st.markdown(f"**Video Time: {int(seconds_slider)} seconds**")
 
-                    drawing_mode = st.selectbox("选择绘制模式", ("freedraw", "line", "rect", "circle", "transform"))
-                    stroke_width = st.slider("笔刷粗细: ", 1, 25, 3)
-                    color = st.color_picker("选择颜色: ", "#000000")
+                    drawing_mode = st.selectbox("Select drawing mode", ("freedraw", "line", "rect", "circle", "transform"))
+                    stroke_width = st.slider("Brush width: ", 1, 25, 3)
+                    color = st.color_picker("Pick a color: ", "#000000")
 
                     canvas_result = st_canvas(
                         fill_color="rgba(255, 165, 0, 0.3)",
@@ -124,32 +122,32 @@ class VideoNoteApp:
                         combined_image.save(img_byte_arr, format="PNG")
                         st.session_state.edited_image = img_byte_arr.getvalue()
 
-            annotation = st.text_area("输入批注内容")
-            if st.button("添加批注") and st.session_state.edited_image and annotation:
+            annotation = st.text_area("Enter annotation")
+            if st.button("Add annotation") and st.session_state.edited_image and annotation:
                 self.add_snapshot(st.session_state.edited_image, int(seconds_slider), annotation)
-                st.success(f"已添加批注: {int(seconds_slider)}秒 - {annotation}")
+                st.success(f"Annotation added: {int(seconds_slider)} seconds - {annotation}")
 
             self.display_notes()
 
     def display_notes(self):
-        st.markdown("### 已添加的批注")
+        st.markdown("### Added Annotations")
         with st.container():
             for i, snapshot in enumerate(st.session_state.snapshots):
-                with st.expander(f"批注 {i+1}: {snapshot['time']} 秒"):
-                    st.image(snapshot["image"], caption=f"{snapshot['time']}秒 - {snapshot['annotation']}")
-                    new_annotation = st.text_area(f"编辑批注 {i+1}", value=snapshot["annotation"], key=f"edit_{i}")
-                    if st.button("更新批注", key=f"update_{i}"):
+                with st.expander(f"Annotation {i+1}: {snapshot['time']} seconds"):
+                    st.image(snapshot["image"], caption=f"{snapshot['time']} seconds - {snapshot['annotation']}")
+                    new_annotation = st.text_area(f"Edit Annotation {i+1}", value=snapshot["annotation"], key=f"edit_{i}")
+                    if st.button("Update Annotation", key=f"update_{i}"):
                         self.update_annotation(i, new_annotation)
-                        st.success("批注已更新")
-                    if st.button("删除", key=f"delete_{i}"):
+                        st.success("Annotation updated")
+                    if st.button("Delete", key=f"delete_{i}"):
                         self.delete_snapshot(i)
                         st.experimental_rerun()
 
     def export_notes(self):
-        st.markdown("## 导出笔记")
-        if st.button("导出为 DOCX"):
+        st.markdown("## Export Notes")
+        if st.button("Export as DOCX"):
             doc = self.export_to_docx()
             buffer = io.BytesIO()
             doc.save(buffer)
             buffer.seek(0)
-            st.download_button("下载 DOCX 文件", data=buffer, file_name="video_notes.docx")
+            st.download_button("Download DOCX File", data=buffer, file_name="video_notes.docx")
