@@ -1,5 +1,5 @@
 # VideoSummarizer
-本项目为采用streamlit搭建，实现了简单的视频可视化笔记。
+本项目采用streamlit搭建，实现了简单的视频可视化笔记。
 - 视频上传（注意这里需要上传本地的youtube视频，命名方式:如果视频url为：`https://www.youtube.com/watch?v=86Gy035z_KA86Gy035z_KA.mp4` 则需要命名为`86Gy035z_KA.mp4`）
 - 字幕提取，采用[youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api) 工具
 - 视频摘要和时间戳生成
